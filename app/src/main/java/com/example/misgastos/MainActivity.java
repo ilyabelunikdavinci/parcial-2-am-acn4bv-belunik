@@ -21,6 +21,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.util.Locale;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout layoutMovimientos;
 
     double total = 0;
+
+    ArrayList<String> listaCategorias = new ArrayList<>();
+    ArrayList<Double> listaMontos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +81,15 @@ public class MainActivity extends AppCompatActivity {
 
         btnResumen = findViewById(R.id.btnResumen);
         btnResumen.setOnClickListener(v -> {
+            double[] montos = new double[listaMontos.size()];
+            for (int i = 0; i < listaMontos.size(); i++) {
+                montos[i] = listaMontos.get(i);
+            }
+
             Intent intent = new Intent(this, ResumenActivity.class);
+            intent.putStringArrayListExtra("categorias", listaCategorias);
+            intent.putExtra("montos", montos);
+            intent.putExtra("total", total);
             startActivity(intent);
         });
 
@@ -127,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
         movimiento.setPadding(0, 8, 0, 8);
         layoutMovimientos.addView(movimiento);
 
+        listaCategorias.add(categoria);
+        listaMontos.add(amount);
         total = total + amount;
         txtTotal.setText(formatear(total));
 
