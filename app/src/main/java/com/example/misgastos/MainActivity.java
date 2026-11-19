@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import android.widget.Spinner;
@@ -15,12 +17,18 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
 
     Spinner spCategoria;
     Button btnAdd;
     EditText edDescription;
     EditText edAmount;
+    TextView txtTotal;
+    LinearLayout layoutMovimientos;
+
+    double total = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         btnAdd = findViewById(R.id.btnAdd);
         edDescription = findViewById(R.id.edDescription);
         edAmount = findViewById(R.id.edAmount);
+        txtTotal = findViewById(R.id.txtTotal);
+        layoutMovimientos = findViewById(R.id.layoutMovimientos);
 
         btnAdd.setOnClickListener(v -> agregarGasto());
 
@@ -62,10 +72,37 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        Toast.makeText(this, description + " - " + texto, Toast.LENGTH_SHORT).show();
+        double amount;
+        try {
+            amount = Double.parseDouble(texto.replace(",", "."));
+        } catch (NumberFormatException e) {
+            edAmount.setError("Monto inválido");
+            return;
+        }
+        if (amount <= 0) {
+            edAmount.setError("El monto debe ser mayor a 0");
+            return;
+        }
+
+        String categoria = spCategoria.getSelectedItem().toString();
+
+        TextView movimiento = new TextView(this);
+        movimiento.setText(categoria + " · " + description + "    " + formatear(amount));
+        movimiento.setTextSize(16);
+        movimiento.setPadding(0, 8, 0, 8);
+        layoutMovimientos.addView(movimiento);
+
+        total = total + amount;
+        txtTotal.setText(formatear(total));
+
+        Toast.makeText(this, "Gasto agregado", Toast.LENGTH_SHORT).show();
 
         edDescription.setText("");
         edAmount.setText("");
         spCategoria.setSelection(0);
+    }
+
+    private String formatear(double valor) {
+        return "$ " + String.format(Locale.forLanguageTag("es-AR"), "%,.2f", valor);
     }
 }
