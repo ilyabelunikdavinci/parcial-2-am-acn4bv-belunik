@@ -1,6 +1,8 @@
 package com.example.misgastos;
 
 import android.os.Bundle;
+import android.view.Gravity;
+import android.widget.ImageView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -61,6 +63,15 @@ public class ResumenActivity extends AppCompatActivity {
                 LinearLayout filaLayout = new LinearLayout(this);
                 filaLayout.setOrientation(LinearLayout.HORIZONTAL);
                 filaLayout.setPadding(0, 24, 0, 4);
+                filaLayout.setGravity(Gravity.CENTER_VERTICAL);
+
+                ImageView icono = new ImageView(this);
+                icono.setImageResource(obtenerIcono(cat));
+                int tam = (int) (24 * getResources().getDisplayMetrics().density);
+                LinearLayout.LayoutParams paramsIcono = new LinearLayout.LayoutParams(tam, tam);
+                paramsIcono.setMarginEnd(tam / 2);
+                icono.setLayoutParams(paramsIcono);
+                filaLayout.addView(icono);
 
                 TextView txtCat = new TextView(this);
                 txtCat.setText(cat + " (" + porcentaje + "%)");
@@ -98,5 +109,24 @@ public class ResumenActivity extends AppCompatActivity {
 
     private String formatear(double valor) {
         return "$ " + String.format(Locale.forLanguageTag("es-AR"), "%,.2f", valor);
+    }
+
+    private int obtenerIcono(String categoria) {
+        switch (categoria) {
+            case "Comida":
+                return R.drawable.ic_comida;
+            case "Transporte":
+                return R.drawable.ic_transporte;
+            case "Servicios":
+                return R.drawable.ic_servicios;
+            case "Salud":
+                return R.drawable.ic_salud;
+            case "Educación":
+                return R.drawable.ic_educacion;
+            case "Ocio":
+                return R.drawable.ic_ocio;
+            default:
+                return R.drawable.ic_otros;
+        }
     }
 }
