@@ -91,6 +91,16 @@
 
         </LinearLayout>
 
+        <!-- Comentario: solo visible si la categoría es "Otros" -->
+        <EditText
+            android:id="@+id/edComentario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Comentario (opcional)"
+            android:inputType="text"
+            android:visibility="gone" />
+
         <!-- Botón -->
         <Button
             android:id="@+id/btnAdd"
@@ -98,6 +108,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="Agregar gasto" />
+
+        <!-- Botón para ir a la segunda pantalla -->
+        <Button
+            android:id="@+id/btnResumen"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Ver resumen por categoría" />
 
         <!-- Título de movimientos -->
         <TextView

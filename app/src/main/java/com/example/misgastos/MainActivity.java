@@ -1,6 +1,9 @@
 package com.example.misgastos;
 
 import android.os.Bundle;
+import android.content.Intent;
+import android.view.View;
+import android.widget.AdapterView;
 
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -23,8 +26,10 @@ public class MainActivity extends AppCompatActivity {
 
     Spinner spCategoria;
     Button btnAdd;
+    Button btnResumen;
     EditText edDescription;
     EditText edAmount;
+    EditText edComentario;
     TextView txtTotal;
     LinearLayout layoutMovimientos;
 
@@ -49,8 +54,33 @@ public class MainActivity extends AppCompatActivity {
         edAmount = findViewById(R.id.edAmount);
         txtTotal = findViewById(R.id.txtTotal);
         layoutMovimientos = findViewById(R.id.layoutMovimientos);
+        edComentario = findViewById(R.id.edComentario);
+
+        spCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String elegida = parent.getItemAtPosition(position).toString();
+                if (elegida.equals("Otros")) {
+                    edComentario.setVisibility(View.VISIBLE);
+                } else {
+                    edComentario.setVisibility(View.GONE);
+                    edComentario.setText("");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         btnAdd.setOnClickListener(v -> agregarGasto());
+
+        btnResumen = findViewById(R.id.btnResumen);
+        btnResumen.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ResumenActivity.class);
+            startActivity(intent);
+        });
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -87,7 +117,12 @@ public class MainActivity extends AppCompatActivity {
         String categoria = spCategoria.getSelectedItem().toString();
 
         TextView movimiento = new TextView(this);
-        movimiento.setText(categoria + " · " + description + "    " + formatear(amount));
+        String comentario = edComentario.getText().toString().trim();
+        String linea = categoria + " · " + description;
+        if (!comentario.isEmpty()) {
+            linea = linea + " (" + comentario + ")";
+        }
+        movimiento.setText(linea + "    " + formatear(amount));
         movimiento.setTextSize(16);
         movimiento.setPadding(0, 8, 0, 8);
         layoutMovimientos.addView(movimiento);
@@ -99,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
         edDescription.setText("");
         edAmount.setText("");
+        edComentario.setText("");
         spCategoria.setSelection(0);
     }
 
